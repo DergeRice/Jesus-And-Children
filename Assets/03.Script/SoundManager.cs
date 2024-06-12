@@ -11,7 +11,7 @@ public class SoundManager : MonoBehaviour
     public static SoundManager instance;
 
     public List<AudioClip> popSounds;
-    public AudioClip dropSound, endSound,startSound , jesusSound;
+    public AudioClip dropSound, endSound,startSound , jesusSound, magicSound;
     public AudioClip tick, tickEnd;
     public List<AudioClip> bgms = new List<AudioClip>();
 
@@ -53,6 +53,10 @@ public class SoundManager : MonoBehaviour
     {
         sfxAudioSource.PlayOneShot(popSounds[UnityEngine.Random.Range(0,popSounds.Count)]);
     }
+    public void PlayMagicSound()
+    {
+        sfxAudioSource.PlayOneShot(magicSound);
+    }
 
     internal void PlayDropSound()
     {
@@ -64,13 +68,13 @@ public class SoundManager : MonoBehaviour
         if(SoundManager.instance.isVibrateOff == true) return; 
         bool isIOS = false;
 
-        #if UNITY_IOS
+        #if UNITY_IOS && !UNITY_EDITOR
         isIOS = true;
         #endif
 
         if(isIOS)
         {
-            #if UNITY_IOS
+            #if UNITY_IOS && !UNITY_EDITOR
             Debug.Log("Ios"+eVibrate.ToString());
             switch (eVibrate)
             {

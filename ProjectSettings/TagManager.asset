@@ -7,6 +7,7 @@ TagManager:
   - Ball
   - BallCollider
   - FxTemporaire
+  - SpotLight
   layers:
   - Default
   - TransparentFX

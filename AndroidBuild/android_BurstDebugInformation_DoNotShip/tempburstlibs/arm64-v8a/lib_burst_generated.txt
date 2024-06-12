@@ -7,11 +7,13 @@ Library: /Users/isangjin/Project J copy/Temp/BurstOutput/tempburstlibs/arm64-v8a
 --dump=Function
 --float-precision=Standard
 --target-framework=NetFramework
+--assembly-defines=AllIn1SpriteShaderAssembly;
 --assembly-defines=Assembly-CSharp-firstpass;
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=CFXRDemo;
 --assembly-defines=CFXRRuntime;
 --assembly-defines=DOTween;
+--assembly-defines=DOTweenPro;
 --assembly-defines=Google.Play.AppUpdate;
 --assembly-defines=Google.Play.AssetDelivery;
 --assembly-defines=Google.Play.AssetDelivery.Samples.AssetDeliveryDemo;
@@ -27,9 +29,12 @@ Library: /Users/isangjin/Project J copy/Temp/BurstOutput/tempburstlibs/arm64-v8a
 --assembly-defines=GoogleMobileAds.Ump;
 --assembly-defines=IngameDebugConsole.Runtime;
 --assembly-defines=KinoBloom.Runtime;
+--assembly-defines=LeTai.TrueShadow.Demo;
+--assembly-defines=LeTai.TrueShadow;
 --assembly-defines=Mono.Security;
 --assembly-defines=mscorlib;
 --assembly-defines=Newtonsoft.Json;
+--assembly-defines=ParticleImage;
 --assembly-defines=Purchasing.Common;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;

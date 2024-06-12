@@ -1,9 +1,19 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using TMPro;
+
+
+public static class LinqExtensions
+{
+    public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> selector)
+    {
+        return source.OrderByDescending(selector).FirstOrDefault();
+    }
+}
 
 public class RankingManager : MonoBehaviour
 {
@@ -39,27 +49,26 @@ public class RankingManager : MonoBehaviour
 
     public void ShowChurchRanking()
     {
+        CleanBoard();
         churchTab.GetComponent<Image>().color = enableColor;
         globalTab.GetComponent<Image>().color = disabledColor;
 
-        SetMyData(churchRankingDatas);
+        SetMyData(churchRankingDatas,true);
         ShowUiList(churchRankingDatas);
     }
     public void ShowGlobalRanking()
     {
+        CleanBoard();
         churchTab.GetComponent<Image>().color = disabledColor;
         globalTab.GetComponent<Image>().color = enableColor;
 
 
-        SetMyData(globalrankingDatas);
+        SetMyData(globalrankingDatas,false);
         ShowUiList(globalrankingDatas);
     }
 
     public void ShowUiList(List<RankingData> datas)
     {
-        CleanBoard();
-        
-
         for (int i = 0; i < datas.Count; i++)
         {
             int index = i;
@@ -77,7 +86,7 @@ public class RankingManager : MonoBehaviour
         }
     }
 
-    public void SetMyData(List<RankingData> datas)
+    public void SetMyData(List<RankingData> datas, bool isChurchRanking)
     {
         var matchingData = datas.FirstOrDefault(data => data.name == NetworkManager.instance.ownData.name && data.churchName == NetworkManager.instance.ownData.churchName);
         profileImgs[NetworkManager.instance.ownData.profileIndex].SetActive(true);
@@ -96,6 +105,32 @@ public class RankingManager : MonoBehaviour
 
             CanvasManager.DisableChild(profileImgs[0].transform.parent.gameObject);
             profileImgs[NetworkManager.instance.ownData.profileIndex].SetActive(true);
+        }else 
+        {    // 매칭되는게 없을대 한번 더 검색
+            // 교회랭킹일텐데 확인하기
+
+            // 아예 없으면 no score, 교회 탭에서 교회같으면 교회 이름 출력
+
+            if(isChurchRanking == true)
+            {
+                var ourChurchData = datas.FirstOrDefault(data => data.churchName == NetworkManager.instance.ownData.churchName);
+                if(ourChurchData != null)
+                {
+                    int rankingIndex = datas.IndexOf(ourChurchData) +1;
+                    string additionalText;
+                    
+                    if(rankingIndex == 1) additionalText = "st";
+                    else if(rankingIndex == 1) additionalText = "nd";
+                    else additionalText = "th";
+
+                    myRankIndex.text = rankingIndex.ToString()+additionalText;
+                    myScore.text = ourChurchData.churchName;
+                }
+            }else  // global ranking이고, 값이 일치하는게 없을 때,
+            {
+                myRankIndex.text = "no rank";
+                myScore.text = "no Score";
+            }
         }
     }
 
@@ -110,13 +145,18 @@ public class RankingManager : MonoBehaviour
     private void OnEnable()
     {
         NetworkManager.instance.GetData(()=>BringDatas(),()=>{gameObject.SetActive(false);});
+        
     }
 
     private void BringDatas()
     {
         globalrankingDatas = NetworkManager.instance.rankingDatas;
-        churchRankingDatas = globalrankingDatas.Where(data => data.churchName == NetworkManager.instance.ownData.churchName).ToList();
-        SetMyData(globalrankingDatas);
+        churchRankingDatas = globalrankingDatas
+            .GroupBy(data => data.churchName) // churchName별로 그룹화
+            .Select(group => group.MaxBy(data => data.score)) // 각 그룹에서 최고 점수를 가진 데이터 선택
+            .ToList();
+        SetMyData(globalrankingDatas,true);
         ShowUiList(globalrankingDatas);
+        ShowGlobalRanking();
     }
 }

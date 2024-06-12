@@ -24,13 +24,45 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.06830841
       objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172609, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Name
       value: Ball Variant 8
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Mass
-      value: 8
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Interpolate
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_SleepingMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172612, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Sprite
@@ -42,11 +74,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172613, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.8
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172613, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.8
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172613, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_LocalScale.z
@@ -107,6 +139,14 @@ PrefabInstance:
     - target: {fileID: 5670532807343728896, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Center.y
       value: -0.0044543743
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375565544586301522, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Radius
+      value: 1.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375565544586301522, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Center.y
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 7638013794638457815, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[0].Array.data[0].X
@@ -194,18 +234,16 @@ PolygonCollider2D:
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_AutoTiling: 1
   m_Points:
     m_Paths:
     - - {x: 0.4784314, y: -1.492157}
       - {x: 0.5411765, y: -1.4764707}
-      - {x: 0.6117647, y: -1.4529413}
       - {x: 0.7176471, y: -1.409804}
       - {x: 0.8196079, y: -1.3666668}
       - {x: 0.97647065, y: -1.2725492}
       - {x: 1.0745099, y: -1.1862745}
       - {x: 1.219608, y: -1.0137255}
-      - {x: 1.3137256, y: -0.78627455}
       - {x: 1.3843138, y: -0.7588236}
       - {x: 1.4313726, y: -0.7156863}
       - {x: 1.482353, y: -0.66470593}
@@ -216,14 +254,10 @@ PolygonCollider2D:
       - {x: 1.4235295, y: -0.0882353}
       - {x: 1.4509804, y: -0.013725491}
       - {x: 1.5058825, y: 0.19411767}
-      - {x: 1.5137256, y: 0.2529412}
       - {x: 1.5215688, y: 0.3392157}
-      - {x: 1.5396127, y: 0.52490896}
       - {x: 1.4745098, y: 0.7196079}
       - {x: 1.3568628, y: 0.9392157}
       - {x: 1.3137256, y: 1.0058824}
-      - {x: 1.219608, y: 1.1313726}
-      - {x: 1.1490197, y: 1.2176471}
       - {x: 0.9294118, y: 1.3862746}
       - {x: 0.85098046, y: 1.4333334}
       - {x: 0.5568628, y: 1.5352942}
@@ -268,4 +302,4 @@ PolygonCollider2D:
       - {x: 0.25882354, y: -1.5313727}
       - {x: 0.31764707, y: -1.5235295}
       - {x: 0.45098042, y: -1.5000001}
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1

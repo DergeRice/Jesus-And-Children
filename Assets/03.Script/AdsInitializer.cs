@@ -14,13 +14,26 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
 
     public BannerAd bannerAd;
     public InterstitialAd interstitialAd;
+
+    public bool isLoadedAds;
  
+    [ContextMenu("DeleteInfo")]
+    public void RemovePlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+    }
+
     void Awake()
     {
         transform.SetParent(null);
 
-        if(instance != null) Destroy(gameObject);
-        if(instance == null ) instance = this;
+        if(instance != null)
+        {
+            Destroy(instance.gameObject);
+            instance = this;
+        } 
+        
+        if(instance == null ) instance = this;                      
 
         DontDestroyOnLoad(gameObject);
         InitializeAds();
@@ -61,8 +74,10 @@ public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
     public void OnInitializationComplete()
     {
         Debug.Log("Unity Ads initialization complete.");
-        bannerAd.LoadBanner();
         interstitialAd = GetComponent<InterstitialAd>();
+
+        interstitialAd.LoadAd();
+        bannerAd.LoadBanner();
     }
  
     public void OnInitializationFailed(UnityAdsInitializationError error, string message)

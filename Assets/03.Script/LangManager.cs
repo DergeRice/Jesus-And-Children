@@ -15,12 +15,13 @@ public class LangManager : MonoBehaviour
     {
         if(instance != null) Destroy(instance.gameObject);
         if(instance == null ) instance = this;
+        isEng = PlayerPrefs.GetInt("LangEng") == 1;
 
        
     }
     void Start()
     {
-        isEng = PlayerPrefs.GetInt("LangEng") == 1;
+        
 
         for (int i = 0; i < langConverts.Length; i++)
         {
@@ -41,10 +42,15 @@ public class LangManager : MonoBehaviour
         isEng = !isEng;
         ConvertAll();
         PlayerPrefs.SetInt("LangEng",isEng? 1:0);
-        
-        // CanvasManager.instance.settingPanel.SetToggleImg(settingButtons[3],orignImgs[3],disalbeImgs[3]);
+        CanvasManager.instance.ChangeNotice();
+        // CanvasManager.instance.settingPanel.SetToggleImg(settingButtons[3],orignImgs[3],disalbeImgs[3]); 
+    }
 
-        
+    public void ChangeLang(bool isEng)
+    {
+        this.isEng = isEng;
+        ConvertAll();
+        PlayerPrefs.SetInt("LangEng",isEng? 1:0);
     }
 
     public void ConvertAll()

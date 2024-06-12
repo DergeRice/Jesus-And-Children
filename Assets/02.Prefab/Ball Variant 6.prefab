@@ -24,13 +24,45 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.44797182
       objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2113411397742592081, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172609, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Name
       value: Ball Variant 6
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Mass
-      value: 10
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Interpolate
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_SleepingMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172612, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Size.x
@@ -54,11 +86,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172613, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172613, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.6
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172613, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_LocalScale.z
@@ -127,6 +159,14 @@ PrefabInstance:
     - target: {fileID: 5670532807343728896, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Center.y
       value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375565544586301522, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Radius
+      value: 1.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 7375565544586301522, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Center.y
+      value: 0.17
       objectReference: {fileID: 0}
     - target: {fileID: 7638013794638457815, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[0].Array.data[0].X
@@ -214,7 +254,7 @@ PolygonCollider2D:
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_AutoTiling: 1
   m_Points:
     m_Paths:
     - - {x: 0.956051, y: -1.2172236}
@@ -287,4 +327,4 @@ PolygonCollider2D:
       - {x: 0.45982146, y: -1.488121}
       - {x: 0.6118847, y: -1.4366676}
       - {x: 0.83482146, y: -1.3116674}
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1

@@ -16,11 +16,15 @@ public class InfoPanel : MonoBehaviour
     public List<Button> galleryUIs = new List<Button>();
     public List<GameObject> profiles = new List<GameObject>();
 
+    public BadWordManager badWordManager;
+
+    public GameObject nicknameInputAlert, churchNameInputAlert;
+
     private void Start()
     {
         closeBtn.onClick.AddListener(()=>{ApplyMyDatas();});
 
-       
+       profileIndex = NetworkManager.instance.ownData.profileIndex;
         for (int i = 0; i < galleryUIs.Count; i++)
         {
             int index = i;
@@ -32,6 +36,7 @@ public class InfoPanel : MonoBehaviour
                 ShowInfoImg(index);
             });
         }
+        Debug.Log("Info");
         ShowInfoImg(PlayerPrefs.GetInt("profileIndex"));
 
     }
@@ -44,6 +49,14 @@ public class InfoPanel : MonoBehaviour
         if(churchNameInput.text != "")
         {
             string trimedName = churchNameInput.text.Replace(" ","");
+
+            if(badWordManager.IsPossbieNickName(trimedName) == false) return;
+            if(churchNameInput.text == null || (!churchNameInput.text.Contains("교회")&&!LangManager.instance.isEng))
+            {
+                churchNameInputAlert.SetActive(true);
+                return;
+            }
+        
             LobbyManager.instance.rankingData.churchName = trimedName;
             rankingData.churchName = trimedName;  
             PlayerPrefs.SetString("churchName",trimedName);
@@ -52,6 +65,14 @@ public class InfoPanel : MonoBehaviour
         if(nicknameInput.text != "")
         {
             string trimedName = nicknameInput.text.Replace(" ","");
+
+            if(badWordManager.IsPossbieNickName(trimedName) == false) return;
+            if(nicknameInput.text == null)
+            {
+                nicknameInputAlert.SetActive(true);
+                return;
+            }
+
             LobbyManager.instance.rankingData.name = trimedName;
             rankingData.name = trimedName;
             PlayerPrefs.SetString("nickName",trimedName);
@@ -62,7 +83,9 @@ public class InfoPanel : MonoBehaviour
         PlayerPrefs.SetInt("profileIndex",profileIndex);
 
         ShowInfoImg(profileIndex);
-
+        
+        nicknameInputAlert.SetActive(false);
+        churchNameInputAlert.SetActive(false);
         CanvasManager.instance.CloseInfoPanel(rankingData);
     }
 

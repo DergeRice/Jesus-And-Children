@@ -6,6 +6,8 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     [SerializeField] string _androidAdUnitId = "Interstitial_Android";
     [SerializeField] string _iOsAdUnitId = "Interstitial_iOS";
     string _adUnitId;
+
+    
  
     void Awake()
     {
@@ -17,7 +19,7 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     }
     private void Start()
     {
-        LoadAd();
+        
     }
  
     // Load content to the Ad Unit:
@@ -30,11 +32,10 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
     }
  
     // Show the loaded content in the Ad Unit:
-    [ContextMenu("ShowAd")]
     public void ShowAd()
     {
         // Note that if the ad content wasn't previously loaded, this method will fail
-        Debug.Log("Showing Ad: " + _adUnitId);
+        Debug.Log("InterADs Show");
         Advertisement.Show(_adUnitId, this);
     }
  
@@ -59,5 +60,8 @@ public class InterstitialAd : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSho
  
     public void OnUnityAdsShowStart(string _adUnitId) { }
     public void OnUnityAdsShowClick(string _adUnitId) { }
-    public void OnUnityAdsShowComplete(string _adUnitId, UnityAdsShowCompletionState showCompletionState) { }
+    public void OnUnityAdsShowComplete(string _adUnitId, UnityAdsShowCompletionState showCompletionState) 
+    { 
+        CanvasManager.instance.rewardPanel.ShowPanel(50);
+    }
 }

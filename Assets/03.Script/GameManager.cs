@@ -55,6 +55,11 @@ public class GameManager : MonoBehaviour
 
     public CanvasGroup canvasGroup;
 
+    public List<GameObject> jesusComeParticle = new List<GameObject>();
+    public List<GameObject> spawnedBalls = new List<GameObject>();
+    
+    public ItemManager itemManager;
+
     private void Awake()
     {
         
@@ -84,29 +89,37 @@ public class GameManager : MonoBehaviour
         ShowNextImg();
         
         SoundManager.instance.ChangeBgm(1);
-        AdsInitializer.instance.interstitialAd.LoadAd();
+
+        
+        
 
         float desiredHeight = Camera.main.orthographicSize;
 
 
         Camera.main.orthographicSize = (9*Screen.height*desiredHeight)/(16*Screen.width);
-            
-        mainCamera.transform.DOMoveY(0.29f,0.4f);
-        Invoke(nameof(FadeInvoke),0.4f);
+        
+        mainCamera.transform.position = new Vector3(0,20.27f,-10);
+        mainCamera.transform.DOMoveY(-0.1f,0.6f);
+        Invoke(nameof(FadeInvoke),0.6f);
     }
 
     public void FadeInvoke()
     {
         canvasGroup.DOFade(1,0.5f);
+        if(AdsInitializer.instance.isRemovedAds == false)
+        {
+            AdsInitializer.instance.bannerAd.ShowBannerAd();
+        }
     }
 
     public void SetIsPossible()
     {
-        Invoke(nameof(SetInteravtiveInvoke),0.3f);
+        StartCoroutine(SetInteractiveCoroutine());
     }
 
-    public void SetInteravtiveInvoke()
+    private IEnumerator SetInteractiveCoroutine()
     {
+        yield return new WaitForSeconds(0.3f);
         isPossibleCreate = true;
     }
 
@@ -133,6 +146,8 @@ public class GameManager : MonoBehaviour
 
                 newBall = Instantiate(currentBall, holdingBall.transform.position, Quaternion.identity);
                 newBall.transform.parent = ballParent.transform;
+                spawnedBalls.Add(newBall);
+
                 SoundManager.instance.PlayDropSound();
                 var currentBallScript = currentBall.GetComponent<Ball>();
 
@@ -168,17 +183,18 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void ReturnLobbyScene()
+    public void ReturnLobbyScene(bool showAd)
     {
         RecodeScore();
 
-        if(AdsInitializer.instance.isRemovedAds == false)
+        if(showAd == true )
         {
             AdsInitializer.instance.interstitialAd.ShowAd();
         }
-
         SceneManager.LoadScene("LobbyScene");
     }
+
+    
     public void ReloadBall()
     {
         ChangeCurrentBall(nextBallIndex);
@@ -241,6 +257,8 @@ public class GameManager : MonoBehaviour
         score += pointList[one.ballLevel-1];
         UpdateUI();
 
+        spawnedBalls.Remove(one.gameObject);
+        spawnedBalls.Remove(two.gameObject);
         Destroy(one.gameObject);
         Destroy(two.gameObject);
          
@@ -267,16 +285,33 @@ public class GameManager : MonoBehaviour
 
 
             temp.transform.parent = ballParent.transform;
+            spawnedBalls.Add(temp);
 
             var tempBall = temp.GetComponent<Ball>();
 
             temp.transform.localScale = new Vector3(0f,0f,1);
-            temp.transform.DOScale(tempBall.initScale,0.2f);
+
+            float scaleDuration =   ( tempBall.initScale.x) * 0.7f;
+            temp.transform.DOScale(tempBall.initScale,scaleDuration);
 
             yield return new WaitForSeconds(0.02f);
             one.mergeAble = true;
             two.mergeAble = true;
 
+        }
+    }
+
+    public void JesusCome()
+    {
+        StartCoroutine(ActivateParticles());
+    }
+
+    IEnumerator ActivateParticles()
+    {
+        foreach (GameObject particle in jesusComeParticle)
+        {
+            particle.SetActive(true);
+            yield return new WaitForSeconds(0.8f);
         }
     }
 
@@ -317,13 +352,14 @@ public class GameManager : MonoBehaviour
 
     IEnumerator DestroyBallsWithDelay()
     {
-        List<GameObject> childList = new List<GameObject>();
+        List<GameObject> allBalls = new List<GameObject>();
+
         for (int i = 0; i < ballParent.transform.childCount; i++)
         {
-            childList.Add(ballParent.transform.GetChild(i).gameObject);
+            allBalls.Add(ballParent.transform.GetChild(i).gameObject);
         }
 
-        foreach (var obj in childList)
+        foreach (var obj in allBalls)
         {
             if(obj.gameObject != null)
             {
@@ -335,7 +371,7 @@ public class GameManager : MonoBehaviour
             }
 
             // 0.1초 대기
-            yield return new WaitForSeconds(0.04f);
+            yield return new WaitForSeconds(0.03f);
         }
 
         if(ballParent.transform.childCount !=0) StartCoroutine(DestroyBallsWithDelay());
@@ -359,11 +395,51 @@ public class GameManager : MonoBehaviour
         RecodeScore();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         
-        if(AdsInitializer.instance.isRemovedAds == false)
+        // if(AdsInitializer.instance.isRemovedAds == false)
+        // {
+        //     AdsInitializer.instance.interstitialAd.ShowAd();
+        // }
+    }
+
+    public void SpotLightAction()
+    {
+        if(itemManager.CheckAvailAble())
         {
-            AdsInitializer.instance.interstitialAd.ShowAd();
+            List<GameObject> SpotedBalls = new List<GameObject>();
+
+            for (int i = spawnedBalls.Count - 1; i >= 0; i--)
+            {
+                if (spawnedBalls[i].GetComponent<Ball>().isSelected == true)
+                {
+                    SpotedBalls.Add(spawnedBalls[i]);
+                    spawnedBalls.RemoveAt(i);
+                }
+            }
+
+            if(SpotedBalls.Count == 0)
+            {
+                string noBalls = LangManager.instance.isEng ? "Noting Selected": "공이 선택되지 않았어요."; 
+                NetworkManager.instance.ToastText(noBalls);
+                return;
+            }
+
+            foreach (var item in SpotedBalls)
+            {
+                // float scaleDuration = item.GetComponent<Ball>().initScale.x * 2f;
+                item.GetComponent<Collider2D>().enabled = false;
+                item.GetComponent<Rigidbody2D>().gravityScale = 0;
+                item.transform.DOLocalRotate(item.transform.rotation.eulerAngles+(Vector3.back*800),1.5f,RotateMode.FastBeyond360);
+                item.transform.DOScale(Vector3.zero, 1.5f);
+                SoundManager.instance.PlayMagicSound();
+                
+                Destroy(item, 1.5f);
+            }
+            
+            SpotedBalls.Clear();
+            itemManager.UseItem();
         }
     }
+
 
 
     public void ShowPolicy()

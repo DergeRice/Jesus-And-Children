@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using DG.Tweening;
 using TMPro;
+using Newtonsoft.Json.Linq;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class NetworkManager : MonoBehaviour
     private TMP_Text toastText;
 
     public GameObject toastUIPrefeb;
+
+    public string noticeText;
 
 
 /// <summary>
@@ -84,9 +87,7 @@ public class NetworkManager : MonoBehaviour
         toastText = toastPanel.transform.GetChild(0).GetComponent<TMP_Text>();
 
         toastText.text = text;
-        toastPanel.alpha =1;
-        toastPanel.DOFade(0,3f).SetEase(Ease.Linear);
-        Destroy(toastPanel.gameObject,3f);
+        Destroy(toastPanel.gameObject,2f);
     }
 
 
@@ -194,7 +195,12 @@ public class NetworkManager : MonoBehaviour
         
 
         action += () => ToastText(showingText);
-        action += () => onlineMode = true;
+        action += () => 
+        {
+            onlineMode = true;
+            CanvasManager.instance.onlineIndicator.SetOnlineState(onlineMode);
+            
+        };
 
         failAction += () => loadingPanel.gameObject.SetActive(false);
 
@@ -203,9 +209,15 @@ public class NetworkManager : MonoBehaviour
         StartCoroutine(OnlineTestFromServer(action,failAction));
     }
 
+    [ContextMenu("NoticeUpload")]
+    public void NoticeUpload()
+    {
+        StartCoroutine(UploadNotice());
+    }
+
     IEnumerator OnlineTestFromServer(Action successAction,Action failAction)
     {
-        using (UnityWebRequest www = UnityWebRequest.Get("http://52.79.46.242:3000/select"))
+        using (UnityWebRequest www = UnityWebRequest.Get("http://52.79.46.242:3000/notice"))
         {
             yield return www.SendWebRequest();
 
@@ -216,10 +228,60 @@ public class NetworkManager : MonoBehaviour
             }
             else
             {
+                JObject jsonObject = JObject.Parse(www.downloadHandler.text);
+
+                string key = "";
+                foreach (var pair in jsonObject)
+                {
+                    key = pair.Key;
+                }
+                string[] splitText = key.Split('^');
+
+                    // 앞부분은 kor, 뒷부분은 eng로 할당합니다.
+                string kor = splitText[0];
+                string eng = splitText[1];
+                
+                Debug.Log(www.downloadHandler.text);
+                CanvasManager.instance.ChangeNotice(eng , kor);
                 successAction?.Invoke();
             }
         }
+    }
+    IEnumerator UploadNotice()
+    {
 
+        // POST 요청을 생성합니다.
+        UnityWebRequest www = UnityWebRequest.PostWwwForm("http://52.79.46.242:3000/noticeupload",noticeText);
+
+        Debug.Log("Sending insert request");
+
+        // 요청을 보냅니다.
+        yield return www.SendWebRequest();
+
+        // 응답을 확인합니다.
+        if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError(www.error);
+        }
+        else
+        {
+            Debug.Log("Response: " + www.downloadHandler.text);
+        }
+    }
+
+    
+
+    public void GoldChange(int value)
+    {
+        var gold = PlayerPrefs.GetInt("gold");
+
+        gold  += value;
+
+        PlayerPrefs.SetInt("gold",gold);
+    }
+    public int GetCurGold()
+    {
         
+        return PlayerPrefs.GetInt("gold");
     }
 }

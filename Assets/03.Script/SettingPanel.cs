@@ -36,7 +36,7 @@ public class SettingPanel : MonoBehaviour
                 );
 
         }
-
+        settingButtons[3].disabled = (PlayerPrefs.GetInt("LangEng") == 1);
     
         SetToggleJustImg(0);
         SetToggleJustImg(1);
@@ -48,7 +48,7 @@ public class SettingPanel : MonoBehaviour
         {
             easterEggPanelCount++;
             
-            if(easterEggPanelCount > 12)
+            if(easterEggPanelCount > 20)
             {
                 easterEggPanel.SetActive(true);
                 easterEggPanelCount = 0;

@@ -421,12 +421,20 @@ PrefabInstance:
       value: Ball Variant 11
       objectReference: {fileID: 0}
     - target: {fileID: 1008013266769511509, guid: 4dab5dab2a84d41c49a5b038c7b24b65, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008013266769511509, guid: 4dab5dab2a84d41c49a5b038c7b24b65, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008013266769511509, guid: 4dab5dab2a84d41c49a5b038c7b24b65, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.9
+      value: 0.26
       objectReference: {fileID: 0}
     - target: {fileID: 1008013266769511509, guid: 4dab5dab2a84d41c49a5b038c7b24b65, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.11
+      value: -2.58
       objectReference: {fileID: 0}
     - target: {fileID: 1008013266769511509, guid: 4dab5dab2a84d41c49a5b038c7b24b65, type: 3}
       propertyPath: m_LocalPosition.z

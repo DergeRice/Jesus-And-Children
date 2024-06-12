@@ -29,8 +29,8 @@ public class BannerAd : MonoBehaviour
         // _hideBannerButton.interactable = false;
  
         // Set the banner position:
+        Debug.Log("BannerPos");
         Advertisement.Banner.SetPosition(_bannerPosition);
-        LoadBanner();
         
  
         // Configure the Load Banner button to call the LoadBanner() method when clicked:
@@ -41,6 +41,7 @@ public class BannerAd : MonoBehaviour
     // Implement a method to call when the Load Banner button is clicked:
     public void LoadBanner()
     {
+        Advertisement.Banner.SetPosition(_bannerPosition);
         // Set up options to notify the SDK of load events:
         BannerLoadOptions options = new BannerLoadOptions
         {
@@ -56,8 +57,8 @@ public class BannerAd : MonoBehaviour
     void OnBannerLoaded()
     {
         Debug.Log("Banner loaded");
-        if(AdsInitializer.instance.isRemovedAds == true) return;
-        ShowBannerAd();
+        
+        
         // Configure the Show Banner button to call the ShowBannerAd() method when clicked:
         // _showBannerButton.onClick.AddListener(ShowBannerAd);
         // // Configure the Hide Banner button to call the HideBannerAd() method when clicked:
@@ -76,8 +77,10 @@ public class BannerAd : MonoBehaviour
     }
  
     // Implement a method to call when the Show Banner button is clicked:
-    void ShowBannerAd()
+    public void ShowBannerAd()
     {
+        
+        Advertisement.Banner.SetPosition(_bannerPosition);
         // Set up options to notify the SDK of show events:
         BannerOptions options = new BannerOptions
         {
@@ -87,7 +90,9 @@ public class BannerAd : MonoBehaviour
         };
  
         // Show the loaded Banner Ad Unit:
+        if(AdsInitializer.instance.isRemovedAds == true) return;
         Advertisement.Banner.Show(_adUnitId, options);
+        Debug.Log("Banner Show");
     }
  
     // Implement a method to call when the Hide Banner button is clicked:

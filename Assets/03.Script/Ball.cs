@@ -17,12 +17,57 @@ public class Ball : MonoBehaviour
 
     public Ball target;
 
+    public bool isSelected;
+
+    private bool isAvailableSelect;
+
     private void Awake()
     {
         mergeAble = true;
         
         initScale = transform.localScale;
-        if(ballLevel == 11) SoundManager.instance.JesusCome();
+        if(ballLevel == 11)
+        {
+            SoundManager.instance.JesusCome();
+            GameManager.instance.JesusCome();
+        }
+
+    }
+    /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    private void Update()
+    {
+        if(isAvailableSelect == false)
+        {
+            isSelected = false;
+            GetComponent<SpriteRenderer>().sortingOrder = 3;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if(other.CompareTag("SpotLight"))
+        {
+            isAvailableSelect = true;
+            isSelected = true;
+            GetComponent<SpriteRenderer>().sortingOrder = 10;
+        }else
+        {
+            isAvailableSelect = false;
+            isSelected = false;
+            GetComponent<SpriteRenderer>().sortingOrder = 3;
+        }
+    }
+    /// <summary>
+    /// Sent when another object leaves a trigger collider attached to
+    /// this object (2D physics only).
+    /// </summary>
+    /// <param name="other">The other Collider2D involved in this collision.</param>
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        isAvailableSelect = false;
+        isSelected = false;
+        GetComponent<SpriteRenderer>().sortingOrder = 3;
     }
 
     private void OnCollisionEnter2D(Collision2D other)

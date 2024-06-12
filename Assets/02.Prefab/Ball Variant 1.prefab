@@ -14,11 +14,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Mass
-      value: 17
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Interpolate
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_SleepingMode
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2138653137534172611, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2138653137534172613, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_RootOrder
@@ -128,6 +140,10 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.24
       objectReference: {fileID: 0}
+    - target: {fileID: 7375565544586301522, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: m_Radius
+      value: 0.23
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -182,7 +198,7 @@ PolygonCollider2D:
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_AutoTiling: 1
   m_Points:
     m_Paths:
     - - {x: 2.2875001, y: -1.75}
@@ -227,4 +243,4 @@ PolygonCollider2D:
       - {x: 1.0875, y: -2.25}
       - {x: 1.3875, y: -2.15}
       - {x: 1.8375, y: -1.975}
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1

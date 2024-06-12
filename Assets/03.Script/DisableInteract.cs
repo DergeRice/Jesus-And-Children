@@ -21,6 +21,6 @@ public class DisableInteract : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        GameManager.instance.SetIsPossible();
+        if(GameManager.instance != null) GameManager.instance.SetIsPossible();
     }
 }
