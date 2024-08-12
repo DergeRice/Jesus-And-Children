@@ -41,9 +41,11 @@ public class CanvasManager : MonoBehaviour
 
     public bool isDefaultNickname = true;
 
-    public GameObject agePanel , noticeObj;
+    public GameObject   noticeObj;
 
     public RewardPanel rewardPanel;
+
+    public AddFriendPanel addFriendPanel;
 
     public string engNotice, korNotice;
 

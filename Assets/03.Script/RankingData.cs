@@ -12,6 +12,6 @@ public class RankingData
     public string name;
     public string churchName;
     public int score;
-
+    public string code;
 
 }

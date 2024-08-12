@@ -36,6 +36,8 @@ public class NetworkManager : MonoBehaviour
 
     public string noticeText;
 
+    public string RecommendTest;
+
 
 /// <summary>
 /// Awake is called when the script instance is being loaded.
@@ -57,6 +59,7 @@ public class NetworkManager : MonoBehaviour
         insertServerURL = awsIP + severInsertURL;
         UpdateOwnData();
         OnlineTest();
+        RecommendCheck(CanvasManager.instance.addFriendPanel.myRecommendCode);
     }
 
     public void UpdateOwnData()
@@ -64,6 +67,7 @@ public class NetworkManager : MonoBehaviour
         ownData.name = PlayerPrefs.GetString("nickName");
         ownData.churchName = PlayerPrefs.GetString("churchName");
         ownData.profileIndex = PlayerPrefs.GetInt("profileIndex");
+        ownData.code = PlayerPrefs.GetString("MyRecommend");
     }
 
 
@@ -189,6 +193,8 @@ public class NetworkManager : MonoBehaviour
     public void OnlineTest(Action action = null, Action failAction = null)
     {
         loadingPanel.gameObject.SetActive(true);
+        
+
         action += () => loadingPanel.gameObject.SetActive(false);
 
         string showingText = LangManager.IsEng() ? "Conneted to server" :"온라인 상태입니다.";
@@ -208,6 +214,24 @@ public class NetworkManager : MonoBehaviour
         failAction += () => ToastText(showingFailText);
         StartCoroutine(OnlineTestFromServer(action,failAction));
     }
+    public void RecommendCheck(string _code)
+    {
+        StartCoroutine(RecommendCheckFromServer(_code));
+    }
+
+    public void RecommendAdd(string _code)
+    {
+        StartCoroutine(RecommendAddToServer(_code));
+    }
+
+    [ContextMenu("RecommendTest")]
+    public void RecommendAdd()
+    {
+        StartCoroutine(RecommendAddToServer(RecommendTest));
+    }
+
+    
+
 
     [ContextMenu("NoticeUpload")]
     public void NoticeUpload()
@@ -247,6 +271,63 @@ public class NetworkManager : MonoBehaviour
             }
         }
     }
+    IEnumerator RecommendAddToServer(string _code)
+    {
+        string jsonBody = JsonUtility.ToJson(new CodeRequest { code = _code });
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
+
+        using (UnityWebRequest request = new UnityWebRequest("http://52.79.46.242:3000/recommendAdd", "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            // 요청 보내기
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Error: " + request.error);
+                Debug.LogError("Response: " + request.downloadHandler.text);
+            }
+            else
+            {
+                CanvasManager.instance.rewardPanel.ShowPanel(2000);
+
+                Debug.Log("Response: " + request.downloadHandler.text);
+            }
+        }
+    }
+
+    IEnumerator RecommendCheckFromServer(string _code)
+    {
+        var request = new UnityWebRequest("http://52.79.46.242:3000/Recommed", "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(_code);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "text/plain");
+        loadingPanel.gameObject.SetActive(true);
+
+        // 요청 보내기
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Error: " + request.error);
+        }
+        else
+        {
+            loadingPanel.gameObject.SetActive(false);
+            
+            int recommendAmount = int.Parse(request.downloadHandler.text);
+            if(recommendAmount > 0) 
+            {
+                CanvasManager.instance.rewardPanel.ShowPanel(int.Parse(request.downloadHandler.text)*2000);
+                ToastText(recommendAmount.ToString() + "명의 친구에게 추천을 받았어요!");
+            }
+            Debug.Log(request.downloadHandler.text);
+        }
+    }
     IEnumerator UploadNotice()
     {
 
@@ -284,4 +365,9 @@ public class NetworkManager : MonoBehaviour
         
         return PlayerPrefs.GetInt("gold");
     }
+}
+
+public class CodeRequest
+{
+    public string code;
 }

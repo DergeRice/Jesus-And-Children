@@ -41,6 +41,7 @@ public class LobbyManager : MonoBehaviour
         CanvasManager.instance.lobbyGold.text = gold.ToString();
 
 
+        InitRecommendCode();
 
         if(PlayerPrefs.HasKey("isFirstTime") == true)
         {
@@ -66,6 +67,24 @@ public class LobbyManager : MonoBehaviour
         AdsInitializer.instance.bannerAd.HideBannerAd();
         NetworkManager.instance.OnlineTest();
     }
+
+    public void InitRecommendCode()
+    {
+        if(PlayerPrefs.HasKey("MyRecommend") == false)
+        {
+            PlayerPrefs.SetString("MyRecommend",RandomHashCodeGenerator.GenerateRandomHashCode());
+            CanvasManager.instance.addFriendPanel.SetMyRecommenCode(PlayerPrefs.GetString("MyRecommend"));
+        }else
+        {
+            CanvasManager.instance.addFriendPanel.SetMyRecommenCode(PlayerPrefs.GetString("MyRecommend"));
+        }
+
+        if(PlayerPrefs.HasKey("Recommeded") == true)
+        {
+            CanvasManager.instance.addFriendPanel.SetAlreadyRecommeded();
+        }
+    }
+
     public void StartGameScene()
     {
         string nickName = PlayerPrefs.GetString("nickName");
@@ -138,4 +157,22 @@ public class LobbyManager : MonoBehaviour
 
     
     
+}
+
+public class RandomHashCodeGenerator 
+{
+    private static readonly char[] chars = "abcdefghijklmnopqrstuvwxyz0123456789".ToCharArray();
+    
+    private static System.Random random = new System.Random();
+
+    // 6자리의 랜덤 해시코드를 생성하는 메서드
+    public static string GenerateRandomHashCode(int length = 6)
+    {
+        char[] result = new char[length];
+        for (int i = 0; i < length; i++)
+        {
+            result[i] = chars[random.Next(chars.Length)];
+        }
+        return new string(result);
+    }
 }
