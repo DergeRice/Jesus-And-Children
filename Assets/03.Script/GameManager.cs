@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using Random = UnityEngine.Random;
 
 public enum EVibrate
 {
@@ -22,10 +23,13 @@ public class GameManager : MonoBehaviour
 
     public bool testMode = false;
 
+    public bool survialMode  = false;
 
     public int score = 0;
     public int highScore = 0;
     public GameObject ball,holdingBall;
+
+    public Enemy enemy;
 
     public List<GameObject> particles = new List<GameObject>();
 
@@ -60,6 +64,10 @@ public class GameManager : MonoBehaviour
     
     public ItemManager itemManager;
 
+    float enemyShootCool = 5f;
+
+    public Queue<int> crackCheckQueue = new Queue<int>();
+
     private void Awake()
     {
         
@@ -69,6 +77,19 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Init();
+        enemyShootCool=5f;
+        survialMode = NetworkManager.instance.isSurvivalMode;
+
+        NetworkManager.instance.ownData.gameMode = "classic";
+
+        if(survialMode == true)
+        {
+            enemy.gameObject.SetActive(true);
+            CanvasManager.instance.itemUI.SetActive(false);
+            NetworkManager.instance.ownData.gameMode = "survival";
+            Invoke(nameof(SurvivalModeInvokeSystem),10f);
+              
+        } 
     }
 
     void Init()
@@ -101,6 +122,37 @@ public class GameManager : MonoBehaviour
         mainCamera.transform.position = new Vector3(0,20.27f,-10);
         mainCamera.transform.DOMoveY(-0.1f,0.6f);
         Invoke(nameof(FadeInvoke),0.6f);
+    }
+
+    public void SurvivalModeInit()
+    {
+
+    }
+
+    public void SurvivalModeInvokeSystem()
+    {
+        StartCoroutine(EnemyShootCo());
+       // shoot ball  
+       
+    //    Debug.Log("Shoooooooooot~~~~ Goal~~");
+       
+    }
+
+    IEnumerator EnemyShootCo()
+    {
+        while(true)
+        {
+            float angle = Random.Range(-70,115);
+            enemy.transform.DOLocalRotate(new Vector3(0,0,angle),enemyShootCool);
+            enemy.Shoot();
+
+            if(enemyShootCool > 0.5f)
+            {
+                    enemyShootCool -= 0.02f;
+            }
+                // Invoke(nameof(SurvivalModeInvokeSystem),enemyShootCool);
+            yield return new WaitForSeconds(enemyShootCool); 
+        }
     }
 
     public void FadeInvoke()
@@ -197,7 +249,8 @@ public class GameManager : MonoBehaviour
     
     public void ReloadBall()
     {
-        ChangeCurrentBall(nextBallIndex);
+        string nextBallIndexString = "T" + nextBallIndex.ToString();
+        ChangeCurrentBall(nextBallIndexString);
         ChangeNextBall();
         holdingBall.GetComponent<SpriteRenderer>().sprite = currentBall.GetComponent<Ball>().ballImg;
         holdingBall.GetComponent<SpriteRenderer>().enabled = true;
@@ -227,9 +280,65 @@ public class GameManager : MonoBehaviour
         ShowNextImg();
     }
 
-    public void ChangeCurrentBall(int index)
+
+    public void ChangeCurrentBall(string tryToCrackCodeVector)
     {
+        string numberPart ;
+        int index = 0;
+        try
+        {
+            numberPart = tryToCrackCodeVector.Substring(1); // 첫 글자(A)를 제외한 나머지를 가져옴
+            index = int.Parse(numberPart);
+        }
+        catch (Exception e)
+        {
+
+            // Debug.LogError("Parsing failed: " + e.Message);
+            ReturnLobbyScene(false);
+            NetworkManager.instance.ToastText("이것도 뚫어보시지!");
+        }
+
+        // int index = int.Parse(numberPart);
+
         currentBall = ballPrefabs[index];
+
+        if(index >= 7)
+        {
+            NetworkManager.instance.GoldChange(-99999);
+            ReturnLobbyScene(false);
+            NetworkManager.instance.ToastText("Thx to Code Vector.");
+        }
+
+        crackCheckQueue.Enqueue(index);
+
+        // if (crackCheckQueue.Count > 4)
+        // {
+        //     crackCheckQueue.Dequeue();
+        // }
+
+        // if (crackCheckQueue.Count == 4 && AreAllValuesEqual())
+        // {
+        //     // OnValuesEqual();
+        //     NetworkManager.instance.GoldChange(-99999);
+        //     ReturnLobbyScene(false);
+        //     NetworkManager.instance.ToastText("코드벡터 관계자분들 사랑합니다.");
+        // }
+    }
+
+    private bool AreAllValuesEqual()
+    {
+        int firstValue = crackCheckQueue.Peek(); // 첫 번째 값
+
+        foreach (int value in crackCheckQueue)
+        {
+            if (value != firstValue || value <= 3)
+            {
+                return false; // 하나라도 조건을 만족하지 않으면 false 반환
+            }
+        }
+
+
+        return true; // 모든 값이 같으면 true 반환
     }
 
     public void ShowNextImg()
@@ -275,9 +384,10 @@ public class GameManager : MonoBehaviour
             if(!testMode) SoundManager.instance.PlayPopSound();
 
             int particleNum = 0;
-            Instantiate(particles[particleNum],pos,Quaternion.identity);
+            var particle = Instantiate(particles[particleNum],pos,Quaternion.identity);
 
-            if(one.ballLevel == 11)
+            
+            if(one.ballLevel >= 11)
             {
                 yield return null;
             }
@@ -288,6 +398,9 @@ public class GameManager : MonoBehaviour
             spawnedBalls.Add(temp);
 
             var tempBall = temp.GetComponent<Ball>();
+
+            particle.transform.localScale = tempBall.transform.localScale * 2.3f;
+            tempBall.CanClearEnemy();
 
             temp.transform.localScale = new Vector3(0f,0f,1);
 
@@ -304,6 +417,7 @@ public class GameManager : MonoBehaviour
     public void JesusCome()
     {
         StartCoroutine(ActivateParticles());
+        // spawnedBalls.
     }
 
     IEnumerator ActivateParticles()

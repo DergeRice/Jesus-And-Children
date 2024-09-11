@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+
 public class AddFriendPanel : MonoBehaviour
 {
     public TMP_InputField recommendCodeInput;
@@ -16,6 +17,8 @@ public class AddFriendPanel : MonoBehaviour
     public Button  firstRecommendButton ,realConfirmRecommend;
 
     public GameObject reCheckPanel;
+
+    public List<GameObject> uploadDisableObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +33,19 @@ public class AddFriendPanel : MonoBehaviour
     {
         
     }
+
+
+    public void CopyMyRefereeCode()
+    {
+        CopyToClipboard(myRecommendCode);
+        NetworkManager.instance.ToastText("내 코드가 복사되었습니다. 원하는 곳에 붙혀넣기 하세요.");
+    }
+
+    public static void CopyToClipboard(string str)
+    {
+        GUIUtility.systemCopyBuffer = str;
+    }
+
 
     public void SetMyRecommenCode(string _text)
     {
@@ -62,9 +78,16 @@ public class AddFriendPanel : MonoBehaviour
     {
         // NetworkManager.instance
 
+
         recommendCode = recommendCodeInput.text ;
         PlayerPrefs.SetString("Recommeded",recommendCode);
-        NetworkManager.instance.RecommendAdd(recommendCode);
+        NetworkManager.instance.RecommendAdd(recommendCode,()=>
+        {
+            for (int i = 0; i < uploadDisableObject.Count; i++)
+            {
+                uploadDisableObject[i].SetActive(false);
+            }
+        });
         
         
     }

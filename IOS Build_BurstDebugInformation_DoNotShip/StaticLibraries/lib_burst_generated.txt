@@ -20,6 +20,8 @@ Library: /Users/isangjin/Documents/GitHub/Jesus-And-Children/Temp/BurstOutput/St
 --assembly-defines=GoogleMobileAds.iOS;
 --assembly-defines=GoogleMobileAds.Ump;
 --assembly-defines=GoogleMobileAds.Ump.iOS;
+--assembly-defines=GUPS.AntiCheat.Demo;
+--assembly-defines=GUPS.AntiCheat;
 --assembly-defines=IngameDebugConsole.Runtime;
 --assembly-defines=KinoBloom.Runtime;
 --assembly-defines=LeTai.TrueShadow.Demo;
@@ -45,6 +47,7 @@ Library: /Users/isangjin/Documents/GitHub/Jesus-And-Children/Temp/BurstOutput/St
 --assembly-defines=Unity.InternalAPIEngineBridge.001;
 --assembly-defines=Unity.LevelPlay;
 --assembly-defines=Unity.Mathematics;
+--assembly-defines=Unity.PlayerPrefsEditor.Samples.SampleScene;
 --assembly-defines=Unity.Services.Core.Configuration;
 --assembly-defines=Unity.Services.Core.Device;
 --assembly-defines=Unity.Services.Core;

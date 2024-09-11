@@ -6,6 +6,10 @@ using TMPro;
 using UnityEngine.Purchasing;
 using UnityEngine.Events;
 
+using GUPS.AntiCheat;
+using GUPS.AntiCheat.Protected.Prefs;
+using System.Security.Cryptography;
+
 public class CanvasManager : MonoBehaviour
 {
     public static CanvasManager instance;
@@ -41,13 +45,17 @@ public class CanvasManager : MonoBehaviour
 
     public bool isDefaultNickname = true;
 
-    public GameObject   noticeObj;
+    public GameObject   noticeObj, itemUI,reviewPanel;
 
     public RewardPanel rewardPanel;
 
     public AddFriendPanel addFriendPanel;
 
     public string engNotice, korNotice;
+
+    public Button selectClassicButton, selectSurvivalButton;
+
+    public GameObject selectGameModePanel;
 
     private void Awake()
     {
@@ -57,6 +65,8 @@ public class CanvasManager : MonoBehaviour
     {   
         instance = this;
         if(isGameScene == true) return;
+        selectClassicButton.onClick.AddListener(()=>NetworkManager.instance.SetSurvivalMode(false));
+        selectSurvivalButton.onClick.AddListener(()=>NetworkManager.instance.SetSurvivalMode(true));
         FirstStart();
         noticeObj.SetActive(false);
     }
@@ -152,6 +162,11 @@ public class CanvasManager : MonoBehaviour
         infoPanel.gameObject.SetActive(true);
     }
 
+    public void ShowReviewPanel()
+    {
+        reviewPanel.gameObject.SetActive(true);
+    }
+
     public void CloseInfoPanel(RankingData rankingData)
     {
         if(nickNameText.text != "" && rankingData.name != null)
@@ -201,6 +216,7 @@ public class CanvasManager : MonoBehaviour
     public void ResetPlayerPrefs()
     {
         PlayerPrefs.DeleteAll();
+
     }
 
     public static void DisableChild(GameObject parent)

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using DG.Tweening;
 using UnityEngine.Networking;
 using System;
+using GUPS.AntiCheat.Protected.Prefs;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -32,12 +33,47 @@ public class LobbyManager : MonoBehaviour
         highScore = PlayerPrefs.GetInt("highScore");
         CanvasManager.instance.highScoreText.text = highScore.ToString();
 
-        if(PlayerPrefs.HasKey("gold") == false)
+        int goldAmount = 0;
+
+        // Debug.Log($"PlayerPrefs.HasKey{PlayerPrefs.HasKey("gold")}");
+        // Debug.Log($"ProtectedPlayerPrefs.HasKey{ProtectedPlayerPrefs.HasKey("gold")}");
+        if(PlayerPrefs.HasKey("gold") == true)
         {
-            PlayerPrefs.SetInt("gold",500);
+            goldAmount = PlayerPrefs.GetInt("gold");
+
+            ProtectedPlayerPrefs.SetInt("gold",goldAmount);
+            ProtectedPlayerPrefs.SetInt("goldDoubleCheck",ProtectedPlayerPrefs.GetInt("gold"));
+
+            PlayerPrefs.DeleteKey("gold");
+            
         }
+
+        if(ProtectedPlayerPrefs.HasKey("gold") == false)
+        {   //업데이트가 되었는데 이전 값 처리
+            ProtectedPlayerPrefs.SetInt("gold",500);
+            ProtectedPlayerPrefs.SetInt("goldDoubleCheck",ProtectedPlayerPrefs.GetInt("gold"));
+
+        }else
+        {
+            goldAmount = ProtectedPlayerPrefs.GetInt("gold");
+
+            if(ProtectedPlayerPrefs.HasKey("goldDoubleCheck")) // 보안 골드가 있는데 더블체크가 있으면
+            {
+                if(ProtectedPlayerPrefs.GetInt("gold") != ProtectedPlayerPrefs.GetInt("goldDoubleCheck"))
+                {
+                    goldAmount = 0;
+                    NetworkManager.instance.ToastText("부정행위가 감지되었습니다. 부정행위가 아니라면 문의부탁드립니다.");
+                    Debug.Log("Cheat");
+                }
+            }else // 보안 골드가 있는데 골드 더블 체크가 없으면 새로 생성
+            {
+                ProtectedPlayerPrefs.SetInt("goldDoubleCheck",ProtectedPlayerPrefs.GetInt("gold"));
+            }
+
+        }
+
         
-        gold = PlayerPrefs.GetInt("gold");
+        gold = goldAmount;
         CanvasManager.instance.lobbyGold.text = gold.ToString();
 
 
@@ -65,7 +101,18 @@ public class LobbyManager : MonoBehaviour
         SoundManager.instance.ChangeBgm(0);
         SoundManager.instance.bgmAudioSource.Play();
         AdsInitializer.instance.bannerAd.HideBannerAd();
-        NetworkManager.instance.OnlineTest();
+        CanvasManager.instance.ChangeNotice(NetworkManager.instance.engNotice,NetworkManager.instance.korNotice);
+        CheckSurvivalMode();
+
+    }
+
+    public void CheckSurvivalMode()
+    {
+        if(NetworkManager.instance.isSurvivalMode == true)
+        {
+            CanvasManager.instance.ShowReviewPanel();
+            NetworkManager.instance.isSurvivalMode = false;
+        }
     }
 
     public void InitRecommendCode()
@@ -99,6 +146,8 @@ public class LobbyManager : MonoBehaviour
             noNamePanel.SetActive(true);
             return;
         }
+        
+        CanvasManager.instance.selectGameModePanel.SetActive(false);
         StartCoroutine(LoadGameSceneAsync());
 
     }
@@ -130,6 +179,10 @@ public class LobbyManager : MonoBehaviour
     {
         Application.OpenURL("https://fascinated-frog-c0b.notion.site/bcdf5b7223214d4a972b6ac89ad27212?pvs=4");
     }
+    public void ShowHomePage()
+    {
+        Application.OpenURL("https://www.baragames.co.kr");
+    }
 
     public void OpenEmail()
     {
@@ -155,7 +208,12 @@ public class LobbyManager : MonoBehaviour
         Debug.Log("Quit App");
     }
 
-    
+    [ContextMenu("GoldLegacyClear")]
+    public void GoldLegacyClear()
+    {
+        ProtectedPlayerPrefs.DeleteKey("gold");
+        PlayerPrefs.SetInt("gold",7777);
+    }
     
 }
 
@@ -175,4 +233,5 @@ public class RandomHashCodeGenerator
         }
         return new string(result);
     }
+    
 }

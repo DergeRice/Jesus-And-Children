@@ -136,6 +136,10 @@ PrefabInstance:
       propertyPath: ballLevel
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4454030778545803197, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      propertyPath: mergeAlbeObject
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5670532807343728896, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       propertyPath: m_Radius
       value: 0.32000002
@@ -198,14 +202,33 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2138653137534172609, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -5652045701580123312}
+      addedObject: {fileID: 1316877935685577721}
+    - targetCorrespondingSourceObject: {fileID: 2138653137534172609, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1185639464396091935}
+    - targetCorrespondingSourceObject: {fileID: 2138653137534172609, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3169941038103572328}
   m_SourcePrefab: {fileID: 100100000, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
 --- !u!1 &3378912781573592277 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2138653137534172609, guid: 521cb3d1124434f5193ed25396fde7c3, type: 3}
   m_PrefabInstance: {fileID: 3695848870417738004}
   m_PrefabAsset: {fileID: 0}
---- !u!60 &-5652045701580123312
+--- !u!114 &1316877935685577721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3378912781573592277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f4b0ddc484a0c4dbf9ca5249617f1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cachePolygon: 0
+--- !u!60 &1185639464396091935
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -246,11 +269,10 @@ PolygonCollider2D:
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
-  m_AutoTiling: 1
+  m_AutoTiling: 0
   m_Points:
     m_Paths:
     - - {x: 1.6612903, y: -1.2177418}
-      - {x: 1.7419355, y: -0.99193543}
       - {x: 1.8387096, y: -0.7338709}
       - {x: 1.9677418, y: -0.62096775}
       - {x: 2.016129, y: -0.39516127}
@@ -261,7 +283,6 @@ PolygonCollider2D:
       - {x: 1.9838709, y: 0.44354838}
       - {x: 2.1451612, y: 0.57258064}
       - {x: 2.1612902, y: 0.6532258}
-      - {x: 2.1612902, y: 0.7338709}
       - {x: 2.1451612, y: 0.83064514}
       - {x: 1.9838709, y: 0.9596774}
       - {x: 1.5967741, y: 1.3629032}
@@ -273,7 +294,6 @@ PolygonCollider2D:
       - {x: 0.12903225, y: 2.298387}
       - {x: -0.048387095, y: 2.4758065}
       - {x: -0.12903225, y: 2.4919355}
-      - {x: -0.33870965, y: 2.4919355}
       - {x: -0.4677419, y: 2.4758065}
       - {x: -0.6451613, y: 2.282258}
       - {x: -0.87096775, y: 2.201613}
@@ -300,11 +320,23 @@ PolygonCollider2D:
       - {x: -1.7903225, y: -1.266129}
       - {x: -1.516129, y: -1.6048386}
       - {x: -1.1935483, y: -1.782258}
-      - {x: -0.9516129, y: -1.8467741}
       - {x: -0.7580645, y: -1.9112903}
       - {x: -0.41935483, y: -1.9435483}
       - {x: 0.54838705, y: -1.9435483}
       - {x: 1, y: -1.8145161}
       - {x: 1.2903225, y: -1.6370968}
       - {x: 1.548387, y: -1.3951613}
-  m_UseDelaunayMesh: 1
+  m_UseDelaunayMesh: 0
+--- !u!114 &3169941038103572328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3378912781573592277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6876803ba35184bf9b6a393e33a2f264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tolerance: 0.01

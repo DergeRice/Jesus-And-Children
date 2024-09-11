@@ -1,4 +1,4 @@
-Library: /Users/isangjin/Project J copy/Temp/BurstOutput/tempburstlibs/arm64-v8a/lib_burst_generated
+Library: /Users/isangjin/Documents/GitHub/Jesus-And-Children/Temp/BurstOutput/tempburstlibs/arm64-v8a/lib_burst_generated
 --platform=Android
 --backend=burst-llvm-16
 --target=ARMV8A_AARCH64
@@ -27,6 +27,8 @@ Library: /Users/isangjin/Project J copy/Temp/BurstOutput/tempburstlibs/arm64-v8a
 --assembly-defines=GoogleMobileAds;
 --assembly-defines=GoogleMobileAds.Ump.Android;
 --assembly-defines=GoogleMobileAds.Ump;
+--assembly-defines=GUPS.AntiCheat.Demo;
+--assembly-defines=GUPS.AntiCheat;
 --assembly-defines=IngameDebugConsole.Runtime;
 --assembly-defines=KinoBloom.Runtime;
 --assembly-defines=LeTai.TrueShadow.Demo;
@@ -53,6 +55,7 @@ Library: /Users/isangjin/Project J copy/Temp/BurstOutput/tempburstlibs/arm64-v8a
 --assembly-defines=Unity.InternalAPIEngineBridge.001;
 --assembly-defines=Unity.LevelPlay;
 --assembly-defines=Unity.Mathematics;
+--assembly-defines=Unity.PlayerPrefsEditor.Samples.SampleScene;
 --assembly-defines=Unity.Services.Core.Configuration;
 --assembly-defines=Unity.Services.Core.Device;
 --assembly-defines=Unity.Services.Core;
@@ -66,10 +69,10 @@ Library: /Users/isangjin/Project J copy/Temp/BurstOutput/tempburstlibs/arm64-v8a
 --assembly-defines=Unity.Timeline;
 --assembly-defines=UnityEngine;
 --generate-link-xml=Temp/burst.link.xml
---temp-folder=/Users/isangjin/Project J copy/Temp/Burst
+--temp-folder=/Users/isangjin/Documents/GitHub/Jesus-And-Children/Temp/Burst
 --key-folder=/Applications/Unity/Hub/Editor/2022.3.22f1/PlaybackEngines/AndroidPlayer
---decode-folder=/Users/isangjin/Project J copy/Library/Burst
---output=/Users/isangjin/Project J copy/Temp/BurstOutput/tempburstlibs/arm64-v8a/lib_burst_generated
+--decode-folder=/Users/isangjin/Documents/GitHub/Jesus-And-Children/Library/Burst
+--output=/Users/isangjin/Documents/GitHub/Jesus-And-Children/Temp/BurstOutput/tempburstlibs/arm64-v8a/lib_burst_generated
 --pdb-search-paths=Temp/ManagedSymbols/
 
 --method=Unity.Burst.BurstCompiler+BurstCompilerHelper, Unity.Burst, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::IsBurstEnabled()--8c2be93e18276203cbd918daa2748a10

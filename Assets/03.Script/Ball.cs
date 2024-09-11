@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using DG.Tweening;
+using TMPro;
 
 public class Ball : MonoBehaviour
 {
     public int ballLevel;
+    public bool mergeAlbeObject;
+    public TMP_Text text;
     
     [HideInInspector] public bool mergeAble = true;
     public Sprite ballImg;
@@ -21,6 +25,8 @@ public class Ball : MonoBehaviour
 
     private bool isAvailableSelect;
 
+    private bool clearEnemyPossible;
+
     private void Awake()
     {
         mergeAble = true;
@@ -33,6 +39,8 @@ public class Ball : MonoBehaviour
         }
 
     }
+
+
     /// <summary>
     /// Update is called every frame, if the MonoBehaviour is enabled.
     /// </summary>
@@ -68,6 +76,18 @@ public class Ball : MonoBehaviour
         isAvailableSelect = false;
         isSelected = false;
         GetComponent<SpriteRenderer>().sortingOrder = 3;
+
+        
+    }
+
+    public void CanClearEnemy()
+    {
+        clearEnemyPossible = true;
+        Invoke(nameof(CanClearEnemyReturn),0.8f);
+    }
+    public void CanClearEnemyReturn()
+    {
+        clearEnemyPossible = false;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -76,15 +96,30 @@ public class Ball : MonoBehaviour
         {
             var otherBall = other.gameObject.GetComponent<Ball>();
 
+            // if(clearEnemyPossible && otherBall.ballLevel > 30)
+            // {
+            //     other.transform.DOScale(Vector3.zero,1f);
+
+            //     // otherBall.GetComponent<Collider2D>().enabled = false;
+            //     otherBall.GetComponent<Rigidbody2D>().gravityScale = 0;
+            //     // otherBall.transform.DOLocalRotate(otherBall.transform.rotation.eulerAngles+(Vector3.back*800),1f,RotateMode.FastBeyond360);
+
+            //     Destroy(other.gameObject,1f);
+            // }
+
             if(otherBall != null)
             {
+                if(mergeAlbeObject == false) return;
                 if(otherBall.ballLevel != ballLevel) return;
                 
                 if(otherBall.mergeAble == false) return;
                 otherBall.mergeAble = true;
                 MergeAction(otherBall);
             }
+
+            
         }
+
     }
 
 

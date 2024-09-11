@@ -7,6 +7,10 @@ using System;
 using DG.Tweening;
 using TMPro;
 using Newtonsoft.Json.Linq;
+using GUPS.AntiCheat;
+using GUPS.AntiCheat.Protected.Prefs;
+using System.Security.Cryptography;
+using System.Text;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -19,7 +23,8 @@ public class NetworkManager : MonoBehaviour
     public string insertServerURL; 
 
 
-    public List<RankingData> rankingDatas ;
+    public List<RankingData> classicRankingDatas ;
+    public List<RankingData> survivalRankingDatas ;
 
     public RankingData ownData;
 
@@ -38,6 +43,11 @@ public class NetworkManager : MonoBehaviour
 
     public string RecommendTest;
 
+    public bool isSurvivalMode;
+
+    public string key;
+
+    public string korNotice, engNotice;
 
 /// <summary>
 /// Awake is called when the script instance is being loaded.
@@ -60,6 +70,11 @@ public class NetworkManager : MonoBehaviour
         UpdateOwnData();
         OnlineTest();
         RecommendCheck(CanvasManager.instance.addFriendPanel.myRecommendCode);
+    }
+
+    public void SetSurvivalMode(bool isSurvival)
+    {
+        isSurvivalMode = isSurvival;
     }
 
     public void UpdateOwnData()
@@ -104,9 +119,16 @@ public class NetworkManager : MonoBehaviour
     public void InsertData(RankingData rankingData,Action action = null,Action failAction = null)
     {
         loadingPanel.gameObject.SetActive(true);
+        rankingData.encryptedScore =  EncryptScore(rankingData.score.ToString(), key);
+        
 
         if(rankingData.name == "") rankingData.name = "Name";
+        if(rankingData.gameMode == "") rankingData.gameMode = "classic";
         if(rankingData.churchName == "") rankingData.churchName = "ChurchName";
+
+        rankingData.encryptedTime = EncryptScore(DateTime.Now.Minute.ToString(),key);
+        rankingData.encryptedGameMode = EncryptScore(rankingData.gameMode,key);
+
         action += () => {
             loadingPanel.gameObject.SetActive(false);
             RankSuccess();
@@ -146,7 +168,7 @@ public class NetworkManager : MonoBehaviour
             {
                 // 서버로부터 받은 응답을 출력합니다
                 string responseData = www.downloadHandler.text;
-                rankingDatas = JsonConvert.DeserializeObject<List<RankingData>>(responseData);
+                classicRankingDatas = JsonConvert.DeserializeObject<List<RankingData>>(responseData);
               
                 successAction?.Invoke();
                 
@@ -216,18 +238,19 @@ public class NetworkManager : MonoBehaviour
     }
     public void RecommendCheck(string _code)
     {
+        Debug.Log($"{_code}로 request보냄");
         StartCoroutine(RecommendCheckFromServer(_code));
     }
 
-    public void RecommendAdd(string _code)
+    public void RecommendAdd(string _code,Action success)
     {
-        StartCoroutine(RecommendAddToServer(_code));
+        StartCoroutine(RecommendAddToServer(_code, success));
     }
 
     [ContextMenu("RecommendTest")]
     public void RecommendAdd()
     {
-        StartCoroutine(RecommendAddToServer(RecommendTest));
+        // StartCoroutine(RecommendAddToServer(RecommendTest));
     }
 
     
@@ -252,26 +275,36 @@ public class NetworkManager : MonoBehaviour
             }
             else
             {
-                JObject jsonObject = JObject.Parse(www.downloadHandler.text);
 
-                string key = "";
-                foreach (var pair in jsonObject)
+                string jsonText = www.downloadHandler.text;
+                Debug.Log(jsonText);
+
+                // jsonText에서 불필요한 부분을 제거하고, 실제 문자열을 추출합니다.
+                string jsonBody = jsonText.Trim(new char[] { '{', '}', '"' });
+
+                // jsonBody는 "테스트입니다.^It's a test" 형태일 것입니다.
+                string notice = jsonBody.Split(':')[0].Trim(); // 키를 추출
+
+                // notice는 "테스트입니다.^It's a test" 형태일 것입니다.
+                string[] splitText = notice.Split('^');
+
+                if (splitText.Length == 2)
                 {
-                    key = pair.Key;
-                }
-                string[] splitText = key.Split('^');
+                    string kor = splitText[0];
+                    string eng = splitText[1];
 
-                    // 앞부분은 kor, 뒷부분은 eng로 할당합니다.
-                string kor = splitText[0];
-                string eng = splitText[1];
-                
-                Debug.Log(www.downloadHandler.text);
-                CanvasManager.instance.ChangeNotice(eng , kor);
-                successAction?.Invoke();
+                    // 이제 각각의 문자열을 UI에 표시합니다.
+                    CanvasManager.instance.ChangeNotice(eng, kor);
+                    
+                    korNotice = kor;
+                    engNotice = eng;
+
+                    successAction?.Invoke();
+                }
             }
         }
     }
-    IEnumerator RecommendAddToServer(string _code)
+    IEnumerator RecommendAddToServer(string _code, Action success)
     {
         string jsonBody = JsonUtility.ToJson(new CodeRequest { code = _code });
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
@@ -293,7 +326,7 @@ public class NetworkManager : MonoBehaviour
             else
             {
                 CanvasManager.instance.rewardPanel.ShowPanel(2000);
-
+                success.Invoke();
                 Debug.Log("Response: " + request.downloadHandler.text);
             }
         }
@@ -354,20 +387,109 @@ public class NetworkManager : MonoBehaviour
 
     public void GoldChange(int value)
     {
-        var gold = PlayerPrefs.GetInt("gold");
+        var gold = ProtectedPlayerPrefs.GetInt("gold");
+
 
         gold  += value;
 
-        PlayerPrefs.SetInt("gold",gold);
+        if(gold < 0) gold = 0;
+        ProtectedPlayerPrefs.SetInt("gold",gold);
+        ProtectedPlayerPrefs.SetInt("goldDoubleCheck",ProtectedPlayerPrefs.GetInt("gold"));
+        // PlayerPrefs.SetInt
     }
+
+
     public int GetCurGold()
     {
         
-        return PlayerPrefs.GetInt("gold");
+        return ProtectedPlayerPrefs.GetInt("gold");
     }
-}
 
-public class CodeRequest
-{
-    public string code;
+    private string EncryptScore(string plainText, string key)
+    {
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = Encoding.UTF8.GetBytes(key);
+            aes.GenerateIV();
+            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+            using (var ms = new System.IO.MemoryStream())
+            {
+                ms.Write(aes.IV, 0, aes.IV.Length);
+                using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                {
+                    using (var sw = new System.IO.StreamWriter(cs))
+                    {
+                        sw.Write(plainText);
+                    }
+                }
+
+                return Convert.ToBase64String(ms.ToArray());
+            }
+        }
+    }
+
+    // //코드에서 냄새가 나기 시작한다... 스멀스멀..
+    public string Decrypt(string encryptedText, string key)
+    {
+        try
+        {
+            byte[] fullCipher = Convert.FromBase64String(encryptedText);
+            byte[] iv = new byte[16];
+            byte[] cipherText = new byte[fullCipher.Length - 16];
+
+            Array.Copy(fullCipher, iv, iv.Length);
+            Array.Copy(fullCipher, iv.Length, cipherText, 0, cipherText.Length);
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
+
+                using (ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                {
+                    using (var ms = new System.IO.MemoryStream(cipherText))
+                    {
+                        using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                        {
+                            using (var sr = new System.IO.StreamReader(cs))
+                            {
+                                return sr.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Decryption failed: " + ex.Message);
+            return null;
+        }
+    }
+
+    // [ContextMenu("EncryptAndDEcrypted")]
+
+    // // 테스트를 위한 예제 함수
+    // public void TestDecryption()
+    // {
+    //     ownData.encryptedScore = EncryptScore(ownData.score.ToString(),key);
+
+    //     // string encryptedText = ownData.encryptedScore; // 암호화된 텍스트
+    //     // string key = "7Jsd9sZ#tGJlf48QbA1pL6k2MjVx8NzO";  // 32바이트 키
+
+    //     string decryptedText = Decrypt(ownData.encryptedScore, key);
+    //     Debug.Log("Decrypted text: " + decryptedText);
+    // }
+
+
+    public class CodeRequest
+    {
+        public string code;
+    }
+
+    public class Notice
+    {
+        public string kor, eng;
+    }
 }

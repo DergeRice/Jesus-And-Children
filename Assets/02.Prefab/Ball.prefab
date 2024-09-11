@@ -48,11 +48,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballLevel: 0
+  mergeAlbeObject: 0
   mergeAble: 1
   ballImg: {fileID: 21300000, guid: 53773c4d610e84fe0a550a7ae6b2956d, type: 3}
   ballCollider: {fileID: 0}
   initScale: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
+  isSelected: 0
 --- !u!212 &2138653137534172612
 SpriteRenderer:
   m_ObjectHideFlags: 0

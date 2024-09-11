@@ -12,6 +12,12 @@ public class RankingData
     public string name;
     public string churchName;
     public int score;
+
+    public string encryptedScore;
     public string code;
+
+    public string encryptedTime;
+    public string encryptedGameMode;
+    public string gameMode;
 
 }
