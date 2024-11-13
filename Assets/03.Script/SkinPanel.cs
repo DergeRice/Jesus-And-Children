@@ -4,19 +4,20 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using AYellowpaper.SerializedCollections;
 
 [System.Serializable]
 public class CharSkinData
 {
     public Sprite skinImg;
     public string skinName;
-    public string unlockCondition;
     public int unlockAmount;
-
     public bool isSelected;
+    public bool isUnlocked;
+    public int cost;
 }
 [System.Serializable]
-public class CharSkinDataList
+public class CharSkinDataList // 한줄을 주는거임 11줄 -- 예수 총 11줄 있음
 {
     public List<CharSkinData> charSkinDatas = new List<CharSkinData>();
 }
@@ -43,6 +44,9 @@ public class SkinPanel : MonoBehaviour
     public TMP_Text skinNameText;
     public TMP_Text conditionTextKor;
     public TMP_Text conditionTextEng;
+
+    public SerializedDictionary<string,CharSkinData> skinDataDictionary =  new SerializedDictionary<string, CharSkinData>();
+    public SkinManager skinManager;
     private void Start()
     {
         for (int i = 0; i < charButtons.Count; i++)
@@ -54,6 +58,11 @@ public class SkinPanel : MonoBehaviour
                 currentCharIndex = index; 
                 SetSkinSelectPanel(index);
             });
+        }
+
+        for (int i = 0; i < charSkinDatas.Count; i++)
+        {
+            skinManager.GetUnlockData(charSkinDatas[i]);
         }
     }
 
