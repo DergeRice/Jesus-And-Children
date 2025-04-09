@@ -54,9 +54,12 @@ public class SkinPanel : MonoBehaviour
             int index = i;
             charButtons[i].onClick.AddListener(()=>
             {
-                selectPanel.SetActive(true);
-                currentCharIndex = index; 
-                SetSkinSelectPanel(index);
+
+                NetworkManager.instance.ToastText(LangManager.IsEng() ? "Coming Soon!" : "다음 업데이트를 기대해주세요!");
+                // 밑에 살리면 셀렉 페널나옴. 지금은 그냥 업데이트 기다리라고 할거임.
+                //selectPanel.SetActive(true);
+                //currentCharIndex = index; 
+                //SetSkinSelectPanel(index);
             });
         }
 

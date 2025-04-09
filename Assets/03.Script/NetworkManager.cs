@@ -43,7 +43,7 @@ public class NetworkManager : MonoBehaviour
 
     public string RecommendTest;
 
-    public bool isSurvivalMode;
+    public bool isTimeAttackMode;
 
     public string key;
 
@@ -72,9 +72,9 @@ public class NetworkManager : MonoBehaviour
         RecommendCheck(CanvasManager.instance.addFriendPanel.myRecommendCode);
     }
 
-    public void SetSurvivalMode(bool isSurvival)
+    public void SetTimeAttackMode(bool isTimeAttack)
     {
-        isSurvivalMode = isSurvival;
+        isTimeAttackMode = isTimeAttack;
     }
 
     public void UpdateOwnData()
@@ -96,7 +96,7 @@ public class NetworkManager : MonoBehaviour
     [ContextMenu("TestSelect")]
     public void SelectData()
     {
-        NetworkManager.instance.GetData();
+        GetData();
     }
 
     public void ToastText(string text)
@@ -142,20 +142,20 @@ public class NetworkManager : MonoBehaviour
     public void GetData(Action action = null, Action failAction = null)
     {
 
-        
-        loadingPanel.gameObject.SetActive(true);
-        action += () => loadingPanel.gameObject.SetActive(false);
 
-        failAction += () => loadingPanel.gameObject.SetActive(false);
+        //loadingPanel.gameObject.SetActive(true);
+        //action += () => loadingPanel.gameObject.SetActive(false);
 
-        string showingText = LangManager.IsEng() ? "Can not upload ranking" :"랭킹을 등록할 수 없어요.";
-        failAction += () => ToastText(showingText);
-        StartCoroutine(GetDataFromServer(action,failAction));
+        //failAction += () => loadingPanel.gameObject.SetActive(false);
+
+        //string showingText = LangManager.IsEng() ? "Can not upload ranking" :"랭킹을 등록할 수 없어요.";
+        //failAction += () => ToastText(showingText);
+        StartCoroutine(GetDataFromServer(action, failAction));
     }
 
-    IEnumerator GetDataFromServer(Action successAction,Action failAction)
+    IEnumerator GetDataFromServer(Action successAction, Action failAction)
     {
-        using (UnityWebRequest www = UnityWebRequest.Get("http://52.79.46.242:3000/select"))
+        using (UnityWebRequest www = UnityWebRequest.Get(selectServerURL))
         {
             yield return www.SendWebRequest();
 
@@ -169,13 +169,13 @@ public class NetworkManager : MonoBehaviour
                 // 서버로부터 받은 응답을 출력합니다
                 string responseData = www.downloadHandler.text;
                 classicRankingDatas = JsonConvert.DeserializeObject<List<RankingData>>(responseData);
-              
+                Debug.Log("good");
                 successAction?.Invoke();
-                
+
             }
         }
 
-        
+
     }
 
 
@@ -188,7 +188,7 @@ public class NetworkManager : MonoBehaviour
         byte[] jsonDataBytes = System.Text.Encoding.UTF8.GetBytes(jsonData);
 
         // POST 요청을 생성합니다.
-        UnityWebRequest www = new UnityWebRequest("http://52.79.46.242:3000/insert/", "POST");
+        UnityWebRequest www = new UnityWebRequest($"{awsIP}/insert/", "POST");
         www.uploadHandler = new UploadHandlerRaw(jsonDataBytes);
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
@@ -264,7 +264,7 @@ public class NetworkManager : MonoBehaviour
 
     IEnumerator OnlineTestFromServer(Action successAction,Action failAction)
     {
-        using (UnityWebRequest www = UnityWebRequest.Get("http://52.79.46.242:3000/notice"))
+        using (UnityWebRequest www = UnityWebRequest.Get($"{awsIP}/notice"))
         {
             yield return www.SendWebRequest();
 
@@ -309,7 +309,7 @@ public class NetworkManager : MonoBehaviour
         string jsonBody = JsonUtility.ToJson(new CodeRequest { code = _code });
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
 
-        using (UnityWebRequest request = new UnityWebRequest("http://52.79.46.242:3000/recommendAdd", "POST"))
+        using (UnityWebRequest request = new UnityWebRequest($"{awsIP}/recommendAdd", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
@@ -334,7 +334,7 @@ public class NetworkManager : MonoBehaviour
 
     IEnumerator RecommendCheckFromServer(string _code)
     {
-        var request = new UnityWebRequest("http://52.79.46.242:3000/Recommed", "POST");
+        var request = new UnityWebRequest($"{awsIP}/Recommed", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(_code);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -365,7 +365,7 @@ public class NetworkManager : MonoBehaviour
     {
 
         // POST 요청을 생성합니다.
-        UnityWebRequest www = UnityWebRequest.PostWwwForm("http://52.79.46.242:3000/noticeupload",noticeText);
+        UnityWebRequest www = UnityWebRequest.PostWwwForm($"{awsIP}/noticeupload",noticeText);
 
         Debug.Log("Sending insert request");
 

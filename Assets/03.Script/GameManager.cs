@@ -23,13 +23,13 @@ public class GameManager : MonoBehaviour
 
     public bool testMode = false;
 
-    public bool survialMode  = false;
+    public bool timeAttackMode  = false;
 
     public int score = 0;
     public int highScore = 0;
     public GameObject ball,holdingBall;
 
-    public Enemy enemy;
+    public TimeAttackTimer timer;
 
     public List<GameObject> particles = new List<GameObject>();
 
@@ -78,18 +78,22 @@ public class GameManager : MonoBehaviour
     {
         Init();
         enemyShootCool=5f;
-        survialMode = NetworkManager.instance.isSurvivalMode;
+        timeAttackMode = NetworkManager.instance.isTimeAttackMode;
 
         NetworkManager.instance.ownData.gameMode = "classic";
 
-        if(survialMode == true)
+        if(timeAttackMode == true)
         {
-            enemy.gameObject.SetActive(true);
+            timer.gameObject.SetActive(true);
             CanvasManager.instance.itemUI.SetActive(false);
             NetworkManager.instance.ownData.gameMode = "survival";
-            Invoke(nameof(SurvivalModeInvokeSystem),10f);
-              
-        } 
+            TimeAttackMode();
+
+        }
+        else
+        {
+            timer.gameObject.SetActive(false);
+        }
     }
 
     void Init()
@@ -124,36 +128,28 @@ public class GameManager : MonoBehaviour
         Invoke(nameof(FadeInvoke),0.6f);
     }
 
-    public void SurvivalModeInit()
-    {
 
+    public void TimeAttackMode()
+    {
+        timer.TimeAttackStart();
     }
 
-    public void SurvivalModeInvokeSystem()
-    {
-        StartCoroutine(EnemyShootCo());
-       // shoot ball  
-       
-    //    Debug.Log("Shoooooooooot~~~~ Goal~~");
-       
-    }
+    //IEnumerator EnemyShootCo()
+    //{
+    //    //while(true)
+    //    //{
+    //    //    float angle = Random.Range(-70,115);
+    //    //    enemy.transform.DOLocalRotate(new Vector3(0,0,angle),enemyShootCool);
+    //    //    enemy.Shoot();
 
-    IEnumerator EnemyShootCo()
-    {
-        while(true)
-        {
-            float angle = Random.Range(-70,115);
-            enemy.transform.DOLocalRotate(new Vector3(0,0,angle),enemyShootCool);
-            enemy.Shoot();
-
-            if(enemyShootCool > 0.5f)
-            {
-                    enemyShootCool -= 0.02f;
-            }
-                // Invoke(nameof(SurvivalModeInvokeSystem),enemyShootCool);
-            yield return new WaitForSeconds(enemyShootCool); 
-        }
-    }
+    //    //    if(enemyShootCool > 0.5f)
+    //    //    {
+    //    //            enemyShootCool -= 0.02f;
+    //    //    }
+    //    //        // Invoke(nameof(SurvivalModeInvokeSystem),enemyShootCool);
+    //    //    yield return new WaitForSeconds(enemyShootCool); 
+    //    //}
+    //}
 
     public void FadeInvoke()
     {

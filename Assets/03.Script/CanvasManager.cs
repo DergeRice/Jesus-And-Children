@@ -65,8 +65,8 @@ public class CanvasManager : MonoBehaviour
     {   
         instance = this;
         if(isGameScene == true) return;
-        selectClassicButton.onClick.AddListener(()=>NetworkManager.instance.SetSurvivalMode(false));
-        selectSurvivalButton.onClick.AddListener(()=>NetworkManager.instance.SetSurvivalMode(true));
+        //selectClassicButton.onClick.AddListener(()=>NetworkManager.instance.SetSurvivalMode(false));
+        //selectSurvivalButton.onClick.AddListener(()=>NetworkManager.instance.SetSurvivalMode(true));
         FirstStart();
         noticeObj.SetActive(false);
     }
@@ -164,7 +164,7 @@ public class CanvasManager : MonoBehaviour
 
     public void ShowReviewPanel()
     {
-        reviewPanel.gameObject.SetActive(true);
+        //reviewPanel.gameObject.SetActive(true);
     }
 
     public void CloseInfoPanel(RankingData rankingData)

@@ -144,8 +144,8 @@ public class RankingManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        NetworkManager.instance.GetData(()=>BringDatas(),()=>{gameObject.SetActive(false);});
-        
+        NetworkManager.instance.GetData(() => BringDatas(), () => { gameObject.SetActive(false); });
+
     }
 
     private void BringDatas()

@@ -108,10 +108,10 @@ public class LobbyManager : MonoBehaviour
 
     public void CheckSurvivalMode()
     {
-        if(NetworkManager.instance.isSurvivalMode == true)
+        if(NetworkManager.instance.isTimeAttackMode == true)
         {
             CanvasManager.instance.ShowReviewPanel();
-            NetworkManager.instance.isSurvivalMode = false;
+            NetworkManager.instance.isTimeAttackMode = false;
         }
     }
 
