@@ -12436,8 +12436,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 300
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a214d930b7a51455bbd0aed43683bc91, type: 2}
-  m_sharedMaterial: {fileID: 1340865040658295328, guid: a214d930b7a51455bbd0aed43683bc91, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
+  m_sharedMaterial: {fileID: 7374927986402738804, guid: c1482dbce654844b9ba1c753cbea5d80, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -26686,7 +26686,7 @@ MonoBehaviour:
   curTime: 0
   floorTime: 0
   triggers: []
-  timeOver: 0
+  timeOver: 1
 --- !u!1 &1382954140
 GameObject:
   m_ObjectHideFlags: 0

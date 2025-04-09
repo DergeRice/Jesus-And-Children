@@ -15,6 +15,13 @@ public class TimeAttackTimer : MonoBehaviour
     public Image clockIcon; 
 
     public bool isGameStart = false;
+
+    MaxLine maxLine;
+
+    private void Start()
+    {
+        maxLine = FindFirstObjectByType<MaxLine>();
+    }
     public void TimeAttackStart()
     {
         //remainTime -= Time.deltaTime;
@@ -28,12 +35,15 @@ public class TimeAttackTimer : MonoBehaviour
         clockIcon.fillAmount = (300 - remainTime )/ 300;
         timeText.text = remainTime.ToString("F1");
 
-        if (remainTime <= 5)
+        if (remainTime <= 5 && maxLine.gameOverTimeTrigger == false && maxLine.isGameOver == false)
         {
-            remainTime = 5;
-            isGameStart = false;
+            maxLine.gameOverTimeTrigger = true;
+        }
 
-            FindFirstObjectByType<MaxLine>().timeOver = true;
+        if(remainTime <= 0)
+        {
+            remainTime = 0;
+            isGameStart = false;
         }
     }
 }

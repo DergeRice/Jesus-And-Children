@@ -11,8 +11,8 @@ public class MaxLine : MonoBehaviour
 
     public List<GameObject> triggers = new List<GameObject>();
 
-    bool isGameOver = false;
-    public bool timeOver = false;
+    public bool isGameOver = false;
+    public bool gameOverTimeTrigger = false;
 
     private void Start()
     {
@@ -20,14 +20,14 @@ public class MaxLine : MonoBehaviour
     }
     private void Update()
     {
-        if(triggers.Count > 0 || timeOver)
+        if(triggers.Count > 0 || gameOverTimeTrigger == true)
         {
             floorTime = (int)curTime;
             curTime -= Time.deltaTime;
             if(0 > curTime && isGameOver == false)
             {
                 GameManager.instance.GameOver();
-                timeOver = false;
+                gameOverTimeTrigger = false;
                 isGameOver = true;
             }
                 
